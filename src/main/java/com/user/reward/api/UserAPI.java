@@ -355,9 +355,11 @@ public class UserAPI {
          * we get the reward amount in the local currency
          */
         try {
+
             String reward = obj.get("reward").toString();
             payPalClient.createPayment(reward, user.getCurrencyName());
         } catch (Exception ex) {
+
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
