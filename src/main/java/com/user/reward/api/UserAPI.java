@@ -19,6 +19,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /**
@@ -341,7 +342,6 @@ public class UserAPI {
      *
      * <p>
      * $ curl -i -X POST -H "Content-Type:application/json" -d "{ \"id\": \"1\", \"name\": \"Maria\", \"countryName\": \"Philippine \", \"currencyName\": \"PHP\"}" http://localhost:8080/api/v1/users//make-paypal-payment
-     * $ curl -i -X POST -H "Content-Type:application/json" -d "{ \"id\": \"1\", \"name\": \"Maria\", \"countryName\": \"Philippine \", \"currencyName\": \"PHP\"}" http://localhost:8080/api/v1/users//make-paypal-payment
      *
      * @return
      */
@@ -349,26 +349,31 @@ public class UserAPI {
     public ResponseEntity<Map<String, Object>> paymentUsingPaypal(@RequestBody User user) {
 
         String s = calculateReward(user.getId()).getBody();
-
         JSONObject obj = new JSONObject(s);
 
         /**
          * we get the reward amount in the local currency
          */
         try {
-
             String reward = obj.get("reward").toString();
             payPalClient.createPayment(reward, user.getCurrencyName());
         } catch (Exception ex) {
-
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
         /*
          * create an unique payment ID for processing the reward payment to our users
          * */
-        String paymentId = (java.util.UUID.randomUUID()).toString();
+        String paymentId = (UUID.randomUUID()).toString();
         Map<String, Object> paymentCompletion = payPalClient.completePayment(paymentId);
+
+        /*
+         * the payment processing is not successful
+         * */
+        if (paymentCompletion.size() == 0) {
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON_UTF8).body(paymentCompletion);
     }
