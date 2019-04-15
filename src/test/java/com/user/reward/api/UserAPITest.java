@@ -216,9 +216,9 @@ public class UserAPITest {
                 .andExpect(
                         jsonPath("$.name", is(user.getName()))
                 ).andExpect(
-                jsonPath("$.currency", is(user.getCurrencyName())));
-//        ).andExpect(
-//                jsonPath("$.reward", equalTo(1.00D)));
+                jsonPath("$.currency", is(user.getCurrencyName()))
+        ).andExpect(
+                jsonPath("$.reward", is("1.00")));
     }
 
     @Test
@@ -253,10 +253,10 @@ public class UserAPITest {
                 .andExpect(
                         jsonPath("$[0].id", is(user.getId().intValue()))
                 ).andExpect(
-                jsonPath("$[0].name", is(user.getName())));
-//        ).andExpect(
-//                jsonPath("$[0].['total_reward_EUR :']", is(2.0))
-//        );
+                jsonPath("$[0].name", is(user.getName()))
+        ).andExpect(
+                jsonPath("$[0].['total_reward_EUR :']", is("2.00"))
+        );
     }
 
     @Test
@@ -268,18 +268,23 @@ public class UserAPITest {
         reward.setUser(user);
         reward.setId(55L);
         reward.setAmount(1);
+
         Reward reward1 = new Reward();
         reward1.setUser(user);
         reward1.setId(57L);
         reward1.setAmount(1);
+
         user.addReward(reward);
         user.addReward(reward1);
+
         Map<String, Double> map = new HashMap<>();
         map.put("EUR", 1.0);
+
         when(currencyUtilities.getCurrencyMap()).thenReturn(map);
         JSONArray rewards = new JSONArray();
         JSONObject object = new JSONObject();
-        object.put("total_reward_EUR", 1);
+        object.put("total_reward_EUR :", 1);
+
         rewards.put(object);
         rewards.put(object);
 
@@ -292,26 +297,31 @@ public class UserAPITest {
                 .andExpect(
                         jsonPath("$.id", is(user.getId().intValue()))
                 ).andExpect(
-                jsonPath("$.name", is(user.getName())));
-//        ).andExpect(
-//                jsonPath("$.rewards[0].['total_reward_EUR :']", is(1))
-//        ).andExpect(
-//                jsonPath("$.rewards[1].['total_reward_EUR :']", is(1))
-//        );
+                jsonPath("$.name", is(user.getName()))
+        ).andExpect(
+                jsonPath("$.rewards[0].[\"total_reward_EUR :\"]", is("1.00"))
+        ).andExpect(
+                jsonPath("$.rewards[1].\"total_reward_EUR :\"", is("1.00"))
+        );
     }
 
 //    @Test
 //    public void paymentUsingPaypal() throws Exception {
+//
 //        when(userService.findById(any(Long.class))).thenReturn(Optional.of(user));
+//
 //        int steps = 1000;
 //        user.setCurrentSteps(steps);
 //        user.setTotalSteps(steps);
+//
 //        when(userService.save(any(User.class))).thenReturn(user);
 //        Map<String, Double> map = new HashMap<>();
 //        map.put("EUR", 1.0);
+//
+//
 //        when(currencyUtilities.getCurrencyMap()).thenReturn(map);
-//        when(payPalClient.createPayment(any(String.class))).thenReturn(new HashMap<>());
-//        when(payPalClient.completePayment(any(HttpServletRequest.class))).thenReturn(new HashMap<>());
+//        when(payPalClient.createPayment(any(String.class), any(String.class))).thenReturn(new HashMap<>());
+//        when(payPalClient.completePayment(any(String.class))).thenReturn(new HashMap<>());
 //
 //        mockMvc.perform(post("/api/v1/users/make-paypal-payment").param("userId", String.valueOf(user.getId())))
 //                .andExpect(
@@ -319,6 +329,5 @@ public class UserAPITest {
 //                ).andExpect(
 //                content().contentType(MediaType.APPLICATION_JSON_UTF8)
 //        ).andDo(print());
-//
 //    }
 }
