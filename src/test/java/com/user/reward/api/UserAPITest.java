@@ -259,6 +259,7 @@ public class UserAPITest {
         );
     }
 
+
     @Test
     public void findUsersPayoutList() throws Exception {
 
@@ -299,9 +300,9 @@ public class UserAPITest {
                 ).andExpect(
                 jsonPath("$.name", is(user.getName()))
         ).andExpect(
-                jsonPath("$.rewards[0].[\"total_reward_EUR :\"]", is("1.00"))
+                jsonPath("$.rewards[0].['total_reward_EUR']", is("1.00"))
         ).andExpect(
-                jsonPath("$.rewards[1].\"total_reward_EUR :\"", is("1.00"))
+                jsonPath("$.rewards[0].['total_reward_EUR']", is("1.00"))
         );
     }
 
