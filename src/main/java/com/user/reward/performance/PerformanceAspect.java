@@ -24,7 +24,8 @@ public class PerformanceAspect {
     /**
      * This method will mesure and tell us the execution time of methods from the DAO layer
      * For example, we will get message like "Execution of findUsersWithRewardHistory took
-     * 101 ms" etc
+     * 101 ms" etc. We used the @Around advice to then target that pointcut and determine the
+     * execution time of the intercepted methods calls.
      *
      * @param joinPoint
      * @return

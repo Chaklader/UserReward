@@ -3,6 +3,7 @@ package com.user.reward.api.thirdparty;
 import com.user.reward.constant.Parameters;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 /**
  * Created by Chaklader on 2019-04-11.
  */
+@EnableAsync
 @Configuration
 @EnableScheduling
 public class CurrencyUtilities {
