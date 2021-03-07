@@ -8,6 +8,7 @@ import com.user.reward.model.User;
 import com.user.reward.service.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,16 +36,21 @@ public class UserAPI {
 
 
     private final UserService userService;
+
     private final PayPalClient payPalClient;
+
     private final CurrencyUtilities currencyUtilities;
 
+
+    @Autowired
     public UserAPI(UserService userService, PayPalClient payPalClient, CurrencyUtilities currencyUtilities) {
 
         this.userService = userService;
+
         this.payPalClient = payPalClient;
+
         this.currencyUtilities = currencyUtilities;
     }
-
 
     /**
      * create the user from the provided user parameters. We can use
@@ -58,7 +64,7 @@ public class UserAPI {
      * @return
      */
     @PostMapping(value = "/createUser", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
+    public ResponseEntity<Object> createUser(@RequestBody @Valid User user) {
 
         userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -75,7 +81,7 @@ public class UserAPI {
      * @return
      */
     @GetMapping(value = "/findUserById")
-    public ResponseEntity<User> findUserById(@RequestParam("userId") Long userId) {
+    public ResponseEntity<Object> findUserById(@RequestParam("userId") Long userId) {
 
         Optional<User> optional = userService.findById(userId);
 
@@ -97,7 +103,7 @@ public class UserAPI {
      * @return
      */
     @GetMapping("/findAllUsers")
-    public ResponseEntity<List<User>> findAllUsers() {
+    public ResponseEntity<Object> findAllUsers() {
 
         List<User> users = userService.findAll();
 
@@ -120,7 +126,7 @@ public class UserAPI {
      * @return
      */
     @PutMapping("/{userId}/saveUserSteps")
-    public ResponseEntity<User> saveUserSteps(@PathVariable("userId") Long userId, @RequestParam("steps") int steps) {
+    public ResponseEntity<Object> saveUserSteps(@PathVariable("userId") Long userId, @RequestParam("steps") int steps) {
 
         Optional<User> optional = userService.findById(userId);
 
@@ -153,7 +159,7 @@ public class UserAPI {
      * @return
      */
     @PutMapping("/calculateReward")
-    public ResponseEntity<String> calculateReward(@RequestParam("userId") Long userId) {
+    public ResponseEntity<Object> calculateReward(@RequestParam("userId") Long userId) {
 
         Optional<User> optional = userService.findById(userId);
 
@@ -226,7 +232,7 @@ public class UserAPI {
      * @return
      */
     @GetMapping("/findUsersWithRewards")
-    public ResponseEntity<String> findUsersWithRewardHistory() {
+    public ResponseEntity<Object> findUsersWithRewardHistory() {
 
         Optional<List<User>> optionalList = userService.findUsersWithRewardHistory();
 
@@ -286,7 +292,7 @@ public class UserAPI {
      * @return
      */
     @GetMapping(value = "/findUsersPayouts")
-    public ResponseEntity<String> findUsersPayoutList(@RequestParam("userId") Long userId) {
+    public ResponseEntity<Object> findUsersPayoutList(@RequestParam("userId") Long userId) {
 
         Optional<User> optional = userService.findById(userId);
 
@@ -346,9 +352,10 @@ public class UserAPI {
      * @return
      */
     @PostMapping("/make-paypal-payment")
-    public ResponseEntity<Map<String, Object>> paymentUsingPaypal(@RequestBody User user) {
+    public ResponseEntity<Object> paymentUsingPaypal(@RequestBody User user) {
 
-        String s = calculateReward(user.getId()).getBody();
+        String s = (String) calculateReward(user.getId()).getBody();
+
         JSONObject obj = new JSONObject(s);
 
         /**

@@ -18,12 +18,15 @@ import static org.mockito.Mockito.verify;
  */
 public class RewardServiceTest {
 
+
     RewardService rewardService;
+
     @Mock
     RewardRepository rewardRepository;
 
     @Before
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
         rewardService = new RewardService(rewardRepository);
     }

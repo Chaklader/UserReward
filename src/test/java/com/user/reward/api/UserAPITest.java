@@ -237,7 +237,7 @@ public class UserAPITest {
         user.addReward(reward);
         user.addReward(reward1);
 
-        when(userService.findUsersWithRewardHistory()).thenReturn(Optional.of(Arrays.asList(user)));
+        when(userService.findUsersWithRewardHistory()).thenReturn(Optional.of(Collections.singletonList(user)));
         Map<String, Double> map = new HashMap<>();
 
         map.put("EUR", 1.0);
